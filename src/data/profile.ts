@@ -1,7 +1,7 @@
 export const PROFILE = {
     name: "Chornael Damar Kesuma",
     nickname: "Damar",
-    role: "Frontend Developer",
+    role: "Web Developer",
     subRole: "& Go Enthusiast",
     tagline: "Crafting polished, high-performance web experiences with a focus on interaction design and scalability.",
     about: {

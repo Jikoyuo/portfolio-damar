@@ -17,9 +17,14 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
+                    className="flex items-center gap-2 justify-center mb-6"
                 >
-                    <span className="inline-block px-3 py-1 mb-6 text-sm font-medium bg-white/50 border border-slate-200 rounded-full backdrop-blur-sm text-slate-600">
-                        👋 {PROFILE.role}
+                    <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                    </span>
+                    <span className="text-sm font-medium text-slate-500 tracking-wide">
+                        {PROFILE.role}
                     </span>
                 </motion.div>
 
