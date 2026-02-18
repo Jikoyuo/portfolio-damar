@@ -101,7 +101,7 @@ export const PROFILE = {
         },
         database: {
             level: "Tools",
-            items: ["PostgreSQL", "Git", "Docker"],
+            items: ["PostgreSQL", "Git", "Docker", "SupaBase", "Koyeb", "Vercel"],
         },
     }
 };
