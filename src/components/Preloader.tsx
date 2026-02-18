@@ -5,6 +5,14 @@ import { useState, useEffect } from "react";
 export default function Preloader() {
     const [isLoading, setIsLoading] = useState(true);
     const [progress, setProgress] = useState(0);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 640);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -33,15 +41,17 @@ export default function Preloader() {
                     className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FAFAFA]"
                 >
                     <motion.div
-                        animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.6, 0.4] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute w-[300px] h-[300px] rounded-full blur-[120px] bg-indigo-100"
+                        animate={isMobile ? { opacity: 0.5 } : { scale: [1, 1.15, 1], opacity: [0.4, 0.6, 0.4] }}
+                        transition={isMobile ? { duration: 0 } : { duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                        className={`absolute rounded-full bg-indigo-100 ${isMobile ? "w-[150px] h-[150px] blur-[60px]" : "w-[300px] h-[300px] blur-[120px]"
+                            }`}
                         style={{ top: "25%", left: "25%" }}
                     />
                     <motion.div
-                        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                        className="absolute w-[250px] h-[250px] rounded-full blur-[120px] bg-purple-100"
+                        animate={isMobile ? { opacity: 0.4 } : { scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+                        transition={isMobile ? { duration: 0 } : { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                        className={`absolute rounded-full bg-purple-100 ${isMobile ? "w-[120px] h-[120px] blur-[60px]" : "w-[250px] h-[250px] blur-[120px]"
+                            }`}
                         style={{ bottom: "25%", right: "25%" }}
                     />
 
@@ -56,7 +66,7 @@ export default function Preloader() {
                                     scale: { duration: 0.5 },
                                     rotate: { duration: 8, repeat: Infinity, ease: "linear" },
                                 }}
-                                className="absolute inset-0 rounded-full"
+                                className="absolute inset-0 rounded-full will-change-transform"
                                 style={{
                                     border: "1px solid transparent",
                                     borderTopColor: "#c7d2fe",
@@ -72,7 +82,7 @@ export default function Preloader() {
                                     scale: { duration: 0.5, delay: 0.1 },
                                     rotate: { duration: 6, repeat: Infinity, ease: "linear" },
                                 }}
-                                className="absolute inset-[18%] rounded-full"
+                                className="absolute inset-[18%] rounded-full will-change-transform"
                                 style={{
                                     border: "1px solid transparent",
                                     borderBottomColor: "#ddd6fe",

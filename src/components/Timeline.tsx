@@ -46,8 +46,7 @@ export default function Timeline({ items }: TimelineProps) {
         <div className="relative pl-8">
             <motion.div
                 initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true, margin: "-80px" }}
+                animate={{ scaleY: 1 }}
                 transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
                 className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-indigo-300 via-indigo-400 to-purple-400 rounded-full origin-top"
             />

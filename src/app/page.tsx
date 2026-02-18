@@ -102,7 +102,7 @@ export default function Home() {
             <div className="md:col-span-2 grid grid-cols-2 gap-4">
               {[
                 { value: "1.5+", label: "Years Exp", color: "text-indigo-600" },
-                { value: "10+", label: "Projects", color: "text-purple-600" },
+                { value: "9", label: "Projects", color: "text-purple-600" },
                 { value: "2×", label: "Competitions", color: "text-emerald-600" },
                 { value: "2", label: "Organizations", color: "text-amber-600" },
               ].map((stat, i) => (
