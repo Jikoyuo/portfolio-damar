@@ -10,6 +10,15 @@ interface ProjectModalProps {
 }
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
+    useEffect(() => {
+        if (project) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => { document.body.style.overflow = ""; };
+    }, [project]);
+
     if (!project) return null;
 
     return (
@@ -52,8 +61,8 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
                     <div className="w-full md:w-1/2 p-5 sm:p-6 md:p-8 overflow-y-auto">
                         <span className={`inline-block text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 ${project.type === 'Office' ? 'bg-blue-100 text-blue-600'
-                                : project.type === 'Campus' ? 'bg-emerald-100 text-emerald-600'
-                                    : 'bg-purple-100 text-purple-600'
+                            : project.type === 'Campus' ? 'bg-emerald-100 text-emerald-600'
+                                : 'bg-purple-100 text-purple-600'
                             }`}>
                             {project.type}
                         </span>
