@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
 import { PROFILE } from "@/data/profile";
 
 export default function Hero() {
@@ -70,6 +70,14 @@ export default function Hero() {
                         className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-slate-900 text-white rounded-full font-bold text-base sm:text-lg hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/20"
                     >
                         View My Work
+                    </a>
+                    <a
+                        href="/cv.pdf"
+                        download
+                        className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full font-bold text-base sm:text-lg hover:from-indigo-500 hover:to-purple-500 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/30"
+                    >
+                        <Download size={20} />
+                        Download CV
                     </a>
                     <a
                         href={PROFILE.socials.email}
