@@ -49,10 +49,10 @@ export const PROJECTS: Project[] = [
     {
         id: 3,
         title: "Sistem Satpam PT. Kanisius",
-        description: "Sistem manajemen keamanan untuk PT. Kanisius Yogyakarta. Mengelola jadwal satpam, patroli, dan pelaporan insiden secara digital menggantikan proses manual berbasis kertas. Dikembangkan sebagai proyek dari kampus.",
+        description: "Sistem manajemen keamanan untuk PT. Kanisius Yogyakarta. Mengelola pencatatan dan perijinan pegawai keluar dan masuk, serta mencatat berbagai catatan kejadian, proyek diberikan oleh kampus pada beberapa grup mahasiswa terpilih.",
         type: "Campus",
         stack: ["PHP 8.0", "CodeIgniter 3", "MySQL", "Bootstrap"],
-        images: ["/api/placeholder/800/600", "/api/placeholder/800/600"],
+        images: ["/Kanisius/1.jpeg", "/Kanisius/login.jpeg", "/Kanisius/2.jpeg", "/Kanisius/3.jpeg", "/Kanisius/4.jpeg", "/Kanisius/5.jpeg", "/Kanisius/6.jpeg"],
     },
     {
         id: 4,
