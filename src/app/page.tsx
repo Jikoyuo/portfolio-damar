@@ -7,6 +7,7 @@ import Hero from "@/components/Hero";
 import SectionHeading from "@/components/SectionHeading";
 import Timeline from "@/components/Timeline";
 import SkillGrid from "@/components/SkillGrid";
+import LanguageCard from "@/components/LanguageCard";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectModal from "@/components/ProjectModal";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -172,6 +173,7 @@ export default function Home() {
         <section id="skills" className="scroll-mt-32">
           <SectionHeading title="Technical Stack" subtitle="Skills & Tools" />
           <SkillGrid categories={skillCategories} />
+          <LanguageCard />
         </section>
 
         <section id="projects" className="scroll-mt-32">
