@@ -17,7 +17,7 @@ export const PROJECTS: Project[] = [
         title: "JiChat - Realtime Social Media",
         description: "Aplikasi media sosial dengan fitur chat realtime, notifikasi, dan feed update. Dibangun untuk menangani koneksi konkuren secara efisien menggunakan goroutine Go dan WebSocket.",
         type: "Personal",
-        stack: ["Go", "Next.js", "MongoDB", "WebSocket", "Redis"],
+        stack: ["Go", "Next.js", "MongoDB", "WebSocket", "Redis", "TailwindCSS"],
         images: ["/api/placeholder/800/600", "/api/placeholder/800/600"],
         links: {
             github: "https://github.com",
@@ -28,7 +28,7 @@ export const PROJECTS: Project[] = [
         id: 2,
         title: "School Auditing System",
         description: "Platform audit enterprise untuk sekolah-sekolah Katolik di Indonesia. Mentransformasi dataset Excel yang kompleks menjadi dashboard analitik interaktif untuk mendukung pengambilan keputusan berbasis data bagi administrator.",
-        type: "Office",
+        type: "Campus",
         stack: ["Go", "React", "ExcelJS", "PostgreSQL"],
         images: ["/api/placeholder/800/600", "/api/placeholder/800/600"],
         links: {

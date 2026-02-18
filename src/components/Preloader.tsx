@@ -32,7 +32,6 @@ export default function Preloader() {
                     transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
                     className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FAFAFA]"
                 >
-                    {/* Soft background blobs — matching portfolio palette */}
                     <motion.div
                         animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.6, 0.4] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -46,12 +45,9 @@ export default function Preloader() {
                         style={{ bottom: "25%", right: "25%" }}
                     />
 
-                    {/* Center content */}
                     <div className="relative z-10 flex flex-col items-center">
 
-                        {/* Orbital rings — minimal, elegant */}
                         <div className="relative w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] flex items-center justify-center">
-                            {/* Outer ring — slow spin */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.6 }}
                                 animate={{ opacity: 1, scale: 1, rotate: 360 }}
@@ -68,7 +64,6 @@ export default function Preloader() {
                                 }}
                             />
 
-                            {/* Middle ring — reverse spin */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.6 }}
                                 animate={{ opacity: 1, scale: 1, rotate: -360 }}
@@ -85,7 +80,6 @@ export default function Preloader() {
                                 }}
                             />
 
-                            {/* Center initials */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -98,7 +92,6 @@ export default function Preloader() {
                             </motion.div>
                         </div>
 
-                        {/* Name */}
                         <motion.h1
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -108,7 +101,6 @@ export default function Preloader() {
                             Chornael Damar<span className="text-indigo-600">.</span>
                         </motion.h1>
 
-                        {/* Divider line — grows from center */}
                         <motion.div
                             initial={{ scaleX: 0 }}
                             animate={{ scaleX: 1 }}
@@ -116,7 +108,6 @@ export default function Preloader() {
                             className="w-10 h-px bg-slate-200 mt-2.5 origin-center"
                         />
 
-                        {/* Subtitle */}
                         <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -126,7 +117,6 @@ export default function Preloader() {
                             Portfolio
                         </motion.p>
 
-                        {/* Progress — thin elegant bar */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}

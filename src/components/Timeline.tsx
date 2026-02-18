@@ -44,7 +44,6 @@ export default function Timeline({ items }: TimelineProps) {
     };
     return (
         <div className="relative pl-8">
-            {/* Vertical Line — animates height from top to bottom */}
             <motion.div
                 initial={{ scaleY: 0 }}
                 whileInView={{ scaleY: 1 }}
@@ -56,7 +55,6 @@ export default function Timeline({ items }: TimelineProps) {
             <div className="space-y-5">
                 {items.map((item, index) => (
                     <div key={index} className="relative group">
-                        {/* Dot — springs in */}
                         <motion.div
                             custom={index}
                             variants={dotVariants}
@@ -66,7 +64,6 @@ export default function Timeline({ items }: TimelineProps) {
                             className="absolute -left-8 top-[18px] w-[14px] h-[14px] rounded-full border-[3px] border-indigo-400 bg-white group-hover:bg-indigo-500 group-hover:border-indigo-500 transition-colors duration-300 z-10"
                         />
 
-                        {/* Card — fades in with subtle rise + deblur */}
                         <motion.div
                             custom={index}
                             variants={cardVariants}

@@ -6,7 +6,6 @@ import { PROFILE } from "@/data/profile";
 export default function Hero() {
     return (
         <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#FAFAFA]">
-            {/* Background Decor */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-indigo-100 rounded-full blur-3xl opacity-50" />
                 <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-purple-100 rounded-full blur-3xl opacity-50" />
@@ -82,7 +81,6 @@ export default function Hero() {
                 </motion.div>
             </div>
 
-            {/* Arrow — positioned at bottom of the section, not inside content */}
             <motion.a
                 href="#about"
                 onClick={(e) => {

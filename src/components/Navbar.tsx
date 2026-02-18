@@ -17,7 +17,6 @@ export default function Navbar() {
     const [activeSection, setActiveSection] = useState("");
     const observerRef = useRef<IntersectionObserver | null>(null);
 
-    // IntersectionObserver-based scroll spy — much more precise than scroll offset
     useEffect(() => {
         const sectionIds = NAV_ITEMS.map(item => item.href.slice(1));
         const visibleSections = new Map<string, number>();
@@ -32,8 +31,6 @@ export default function Navbar() {
                     }
                 });
 
-                // Pick the section with the highest intersection ratio
-                // If none visible, keep the last known section
                 if (visibleSections.size > 0) {
                     let bestSection = "";
                     let bestRatio = 0;
@@ -43,7 +40,6 @@ export default function Navbar() {
                             bestSection = id;
                         }
                     });
-                    // For bottom sections (Contact), also check if we're near the bottom of the page
                     const atBottom = (window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 100);
                     if (atBottom && visibleSections.has("contact")) {
                         setActiveSection("contact");
@@ -53,13 +49,10 @@ export default function Navbar() {
                 }
             },
             {
-                // Multiple thresholds for better precision
                 threshold: [0, 0.1, 0.2, 0.3, 0.5],
                 rootMargin: "-80px 0px -30% 0px",
             }
         );
-
-        // Observe all sections
         sectionIds.forEach(id => {
             const el = document.getElementById(id);
             if (el) observerRef.current?.observe(el);
@@ -68,11 +61,9 @@ export default function Navbar() {
         return () => observerRef.current?.disconnect();
     }, []);
 
-    // Also handle bottom-of-page edge case for Contact
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
-            // If we're at the very bottom, force Contact active
             const atBottom = (window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 100);
             if (atBottom) {
                 setActiveSection("contact");
@@ -113,7 +104,6 @@ export default function Navbar() {
                         Chornael Damar K<span className="hidden sm:inline">esuma</span><span className="text-indigo-600">.</span>
                     </a>
 
-                    {/* Desktop Nav */}
                     <div className="hidden md:flex items-center gap-1">
                         {NAV_ITEMS.map((item) => {
                             const isActive = activeSection === item.href.slice(1);
@@ -140,7 +130,6 @@ export default function Navbar() {
                         })}
                     </div>
 
-                    {/* Mobile Menu Toggle */}
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="md:hidden z-50 p-2 text-slate-600 hover:text-indigo-600 transition-colors"
@@ -151,7 +140,6 @@ export default function Navbar() {
                 </div>
             </motion.nav>
 
-            {/* Mobile Menu Overlay */}
             <AnimatePresence>
                 {mobileMenuOpen && (
                     <motion.div

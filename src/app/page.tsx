@@ -169,17 +169,14 @@ export default function Home() {
           </AnimatePresence>
         </section>
 
-        {/* ─── Skills Section ─── */}
         <section id="skills" className="scroll-mt-32">
-          <SectionHeading title="Technical Arsenal" subtitle="Skills & Tools" />
+          <SectionHeading title="Technical Stack" subtitle="Skills & Tools" />
           <SkillGrid categories={skillCategories} />
         </section>
 
-        {/* ─── Projects Section ─── */}
         <section id="projects" className="scroll-mt-32">
           <SectionHeading title="Featured Work" subtitle="Portfolio" />
 
-          {/* Filter Buttons */}
           <div className="flex gap-2 mb-8">
             {(['All', 'Office', 'Personal', 'Campus'] as const).map(filter => (
               <motion.button
