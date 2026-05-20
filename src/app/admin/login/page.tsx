@@ -4,7 +4,6 @@ import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminAuth } from "@/components/admin/AdminAuth";
 import { Lock, User as UserIcon } from "lucide-react";
-import { BlobShape } from "@/components/Scribbles";
 
 export default function LoginPage() {
   const { login, token, ready } = useAdminAuth();
@@ -33,16 +32,6 @@ export default function LoginPage() {
 
   return (
     <div className="relative grid min-h-[75vh] place-items-center overflow-hidden">
-      <BlobShape
-        className="pointer-events-none absolute -top-32 -left-32 h-[600px] w-[600px] float-slow"
-        color="var(--clay)"
-        opacity={0.10}
-      />
-      <BlobShape
-        className="pointer-events-none absolute -bottom-32 -right-32 h-[600px] w-[600px] float-slow"
-        color="var(--moss)"
-        opacity={0.08}
-      />
 
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">

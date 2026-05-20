@@ -1,99 +1,72 @@
 "use client";
-
 import { PROFILE } from "@/data/profile";
-import SectionMark from "../SectionMark";
-import Magnetic from "../Magnetic";
-import { Github, Linkedin, Mail, ArrowUpRight } from "lucide-react";
-import { HandArrow } from "../Scribbles";
+import { Github, Linkedin } from "lucide-react";
+import Reveal from "../Reveal";
 
 export default function Contact() {
   return (
-    <section id="contact" className="relative scroll-mt-32 py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-4">
-        <SectionMark
-          number="05"
-          kicker="The last page"
-          title="Get in"
-          tagline="touch."
-        />
+    <section id="contact" className="py-28 md:py-36 border-t border-[var(--border)]">
+      <div className="mx-auto max-w-7xl px-5">
+        <div className="flex items-center gap-4 mb-16">
+          <span className="label text-[var(--volt)]">§ 05</span>
+          <div className="h-px flex-1 bg-[var(--border)]" />
+          <span className="label">Contact</span>
+        </div>
 
-        <div className="grid grid-cols-12 gap-8 md:gap-14">
-          <div className="col-span-12 md:col-span-7">
-            <p className="font-[family-name:var(--font-display)] text-3xl md:text-5xl leading-[1.1] text-[var(--ink)]">
-              I&rsquo;m always up for a good conversation about{" "}
-              <span className="italic text-[var(--clay)]">interfaces, frontends,</span>{" "}
-              and the quiet craft of shipping things that feel handmade.
-            </p>
+        <Reveal>
+          <h2 className="font-[family-name:var(--font-display)] font-black uppercase leading-[0.88] tracking-tight text-[var(--text)] mb-12"
+            style={{ fontSize: "clamp(2.8rem, 9vw, 9rem)" }}>
+            Let&rsquo;s<br />
+            <span className="text-[var(--volt)]">work</span><br />
+            together.
+          </h2>
+        </Reveal>
 
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <HandArrow className="h-12 w-14 -rotate-[18deg] text-[var(--clay)]" />
-              <Magnetic strength={22}>
-                <a
-                  href={PROFILE.socials.email}
-                  data-cursor="Write"
-                  className="group inline-flex items-center gap-3 rounded-full bg-[var(--ink)] px-7 py-4 text-base font-medium text-[var(--paper)] transition-all hover:bg-[var(--clay)]"
-                >
-                  Write me a note
-                  <ArrowUpRight
-                    size={18}
-                    className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  />
-                </a>
-              </Magnetic>
+        <Reveal delay={100}>
+          <div className="grid grid-cols-12 gap-8 border-t border-[var(--border)] pt-10">
+            <div className="col-span-12 md:col-span-7">
+              <p className="font-[family-name:var(--font-mono)] text-[13.5px] leading-[1.9] text-[var(--text-2)] max-w-[55ch] mb-8">
+                Tertarik untuk berkolaborasi, punya proyek menarik, atau sekadar ingin ngobrol soal code?
+                Saya selalu terbuka untuk diskusi dan peluang baru.
+              </p>
+              <a
+                href={PROFILE.socials.email}
+                className="group inline-flex items-center gap-4 bg-[var(--volt)] px-8 py-4 font-[family-name:var(--font-mono)] text-[13px] uppercase tracking-[0.16em] text-[var(--bg)] transition-all hover:bg-[var(--text)]"
+              >
+                chornaeld@gmail.com
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+
+            <div className="col-span-12 md:col-span-5 md:border-l border-[var(--border)] md:pl-8">
+              <dl className="space-y-6">
+                <div>
+                  <dt className="label mb-1">Based in</dt>
+                  <dd className="font-[family-name:var(--font-mono)] text-[13px] text-[var(--text)]">Yogyakarta, Indonesia · UTC+7</dd>
+                </div>
+                <div>
+                  <dt className="label mb-1">Response time</dt>
+                  <dd className="font-[family-name:var(--font-mono)] text-[13px] text-[var(--text)]">Usually within 24 hours</dd>
+                </div>
+                <div>
+                  <dt className="label mb-3">Elsewhere</dt>
+                  <dd className="flex gap-3">
+                    {[
+                      { href: PROFILE.socials.github,   Icon: Github,   label: "GitHub"   },
+                      { href: PROFILE.socials.linkedin,  Icon: Linkedin, label: "LinkedIn" },
+                    ].map(s => (
+                      <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 border border-[var(--border-2)] px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--text-2)] hover:border-[var(--volt)] hover:text-[var(--volt)] transition-colors"
+                      >
+                        <s.Icon size={13} /> {s.label}
+                      </a>
+                    ))}
+                  </dd>
+                </div>
+              </dl>
             </div>
           </div>
-
-          <aside className="col-span-12 md:col-span-5 md:border-l md:border-[var(--bone-3)] md:pl-10">
-            <dl className="space-y-7">
-              <div>
-                <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-                  Email
-                </dt>
-                <dd>
-                  <a
-                    className="scribble-link font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] hover:text-[var(--clay)] transition-colors"
-                    href={PROFILE.socials.email}
-                    data-cursor="Mail"
-                  >
-                    chornaeld@gmail.com
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-                  Elsewhere
-                </dt>
-                <dd className="mt-2 flex items-center gap-3">
-                  {[
-                    { href: PROFILE.socials.linkedin, label: "LinkedIn", icon: Linkedin },
-                    { href: PROFILE.socials.github,   label: "GitHub",   icon: Github },
-                    { href: PROFILE.socials.email,    label: "Email",    icon: Mail },
-                  ].map((s) => (
-                    <a
-                      key={s.label}
-                      href={s.href}
-                      target={s.label === "Email" ? undefined : "_blank"}
-                      rel="noopener noreferrer"
-                      data-cursor={s.label}
-                      aria-label={s.label}
-                      className="grid h-11 w-11 place-items-center rounded-full border border-[var(--bone-3)] bg-[var(--paper)] text-[var(--ink)] transition-all hover:-translate-y-0.5 hover:border-[var(--clay)] hover:text-[var(--clay)]"
-                    >
-                      <s.icon size={16} />
-                    </a>
-                  ))}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-                  Time zone
-                </dt>
-                <dd className="mt-2 text-base text-[var(--ink-2)]">
-                  Asia/Jakarta · GMT+7 — usually replies within a day.
-                </dd>
-              </div>
-            </dl>
-          </aside>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

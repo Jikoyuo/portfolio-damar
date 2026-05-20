@@ -1,106 +1,76 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 
 export default function Cursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-  const [label, setLabel] = useState<string | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    // Only on fine pointer devices
-    const mq = window.matchMedia("(pointer: fine)");
-    if (!mq.matches) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
     setEnabled(true);
     document.documentElement.classList.add("cursor-on");
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let ringX = mouseX;
-    let ringY = mouseY;
-    let raf = 0;
+    let x = 0, y = 0, cx = 0, cy = 0, raf = 0;
 
-    const move = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-      }
-    };
+    const move = (e: MouseEvent) => { x = e.clientX; y = e.clientY; setVisible(true); };
+    const enter = () => setActive(true);
+    const leave = () => setActive(false);
 
     const loop = () => {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      cx += (x - cx) * 0.14;
+      cy += (y - cy) * 0.14;
+      if (ref.current) {
+        ref.current.style.transform = `translate3d(${cx}px,${cy}px,0)`;
       }
       raf = requestAnimationFrame(loop);
     };
 
-    const enter = (e: Event) => {
-      const t = e.currentTarget as HTMLElement;
-      const l = t.getAttribute("data-cursor") || "";
-      setLabel(l || "•");
-      ringRef.current?.classList.add("is-active");
+    const bind = () => {
+      document.querySelectorAll("a,button,[data-cursor]").forEach(el => {
+        el.addEventListener("mouseenter", enter);
+        el.addEventListener("mouseleave", leave);
+      });
     };
-    const leave = () => {
-      setLabel(null);
-      ringRef.current?.classList.remove("is-active");
-    };
-
-    const targets = document.querySelectorAll<HTMLElement>(
-      "a, button, [data-cursor]"
-    );
-    targets.forEach((t) => {
-      t.addEventListener("mouseenter", enter);
-      t.addEventListener("mouseleave", leave);
-    });
 
     window.addEventListener("mousemove", move, { passive: true });
     raf = requestAnimationFrame(loop);
+    bind();
+    const obs = new MutationObserver(bind);
+    obs.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       document.documentElement.classList.remove("cursor-on");
       window.removeEventListener("mousemove", move);
       cancelAnimationFrame(raf);
-      targets.forEach((t) => {
-        t.removeEventListener("mouseenter", enter);
-        t.removeEventListener("mouseleave", leave);
-      });
+      obs.disconnect();
     };
   }, []);
 
   if (!enabled) return null;
 
   return (
-    <>
-      <div
-        ref={dotRef}
-        aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[100] -ml-[3px] -mt-[3px] h-[6px] w-[6px] rounded-full bg-[var(--ink)] mix-blend-difference"
-        style={{ willChange: "transform" }}
-      />
-      <div
-        ref={ringRef}
-        aria-hidden
-        className="cursor-ring pointer-events-none fixed left-0 top-0 z-[99] -ml-[18px] -mt-[18px] flex h-[36px] w-[36px] items-center justify-center rounded-full border border-[var(--ink)]/40 text-[10px] font-mono uppercase tracking-widest text-[var(--ink)] transition-[width,height,background-color,border-color] duration-300"
-        style={{ willChange: "transform" }}
-      >
-        <span className="px-1">{label}</span>
-        <style jsx>{`
-          .cursor-ring.is-active {
-            width: 64px;
-            height: 64px;
-            margin-left: -32px;
-            margin-top: -32px;
-            background: var(--clay);
-            border-color: var(--clay);
-            color: var(--paper);
-            mix-blend-mode: normal;
-          }
-        `}</style>
-      </div>
-    </>
+    <div
+      ref={ref}
+      aria-hidden
+      className="pointer-events-none fixed left-0 top-0 z-[9999] -ml-4 -mt-4"
+      style={{ willChange: "transform", opacity: visible ? 1 : 0 }}
+    >
+      {/* Crosshair */}
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        {/* Horizontal line */}
+        <line x1="0" y1="16" x2="13" y2="16" stroke={active ? "var(--volt)" : "var(--text)"} strokeWidth="1.5" />
+        <line x1="19" y1="16" x2="32" y2="16" stroke={active ? "var(--volt)" : "var(--text)"} strokeWidth="1.5" />
+        {/* Vertical line */}
+        <line x1="16" y1="0" x2="16" y2="13" stroke={active ? "var(--volt)" : "var(--text)"} strokeWidth="1.5" />
+        <line x1="16" y1="19" x2="16" y2="32" stroke={active ? "var(--volt)" : "var(--text)"} strokeWidth="1.5" />
+        {/* Center dot */}
+        <circle cx="16" cy="16" r={active ? "3" : "1.5"}
+          fill={active ? "var(--volt)" : "var(--text)"}
+          style={{ transition: "r 0.2s, fill 0.2s" }}
+        />
+      </svg>
+    </div>
   );
 }

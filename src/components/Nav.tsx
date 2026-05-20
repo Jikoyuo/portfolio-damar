@@ -1,105 +1,83 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import Magnetic from "./Magnetic";
 
 const LINKS = [
-  { href: "#index",   label: "Index",    num: "00" },
-  { href: "#about",   label: "About",    num: "01" },
-  { href: "#journey", label: "Journey",  num: "02" },
-  { href: "#craft",   label: "Craft",    num: "03" },
-  { href: "#work",    label: "Work",     num: "04" },
-  { href: "#contact", label: "Contact",  num: "05" },
+  { href: "#about",   label: "About",   n: "01" },
+  { href: "#work",    label: "Work",    n: "02" },
+  { href: "#craft",   label: "Craft",   n: "03" },
+  { href: "#journey", label: "Journey", n: "04" },
+  { href: "#contact", label: "Contact", n: "05" },
 ];
 
 export default function Nav() {
-  const [active, setActive] = useState<string>("index");
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState("");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll();
+    const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    const ids = LINKS.map((l) => l.href.slice(1));
-    const observed = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => !!el);
     const io = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        const visible = entries.filter(e => e.isIntersecting);
         if (visible[0]) setActive(visible[0].target.id);
       },
-      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.6, 1] }
+      { rootMargin: "-30% 0px -60% 0px" }
     );
-    observed.forEach((el) => io.observe(el));
+    LINKS.forEach(l => {
+      const el = document.getElementById(l.href.slice(1));
+      if (el) io.observe(el);
+    });
 
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      io.disconnect();
-    };
+    return () => { window.removeEventListener("scroll", onScroll); io.disconnect(); };
   }, []);
 
-  const scrollTo = (e: React.MouseEvent, href: string) => {
+  const go = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <nav
-      className={`sticky top-0 z-30 transition-colors ${
-        scrolled ? "bg-[var(--bone)]/85 backdrop-blur-xl" : "bg-transparent"
-      }`}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5">
-        <a
-          href="#index"
-          onClick={(e) => scrollTo(e, "#index")}
-          data-cursor="Top"
-          className="group inline-flex items-baseline gap-2"
-        >
-          <span className="font-[family-name:var(--font-display)] italic text-3xl leading-none text-[var(--ink)]">
-            damar
-          </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-            /portfolio
+    <nav className={`sticky top-0 z-40 transition-colors duration-300 ${scrolled ? "bg-[var(--bg)]/90 backdrop-blur-md border-b border-[var(--border)]" : ""}`}>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
+        {/* Logo */}
+        <a href="#" onClick={e => go(e, "#")} className="group flex items-center gap-3">
+          <span className="label text-[var(--volt)]">CDK</span>
+          <span className="h-4 w-px bg-[var(--border)]" />
+          <span className="label text-[var(--muted)] group-hover:text-[var(--text)] transition-colors">
+            Portfolio
           </span>
         </a>
 
-        <div className="hidden md:flex items-center gap-1">
-          {LINKS.map((l) => (
-            <Magnetic key={l.href} strength={10}>
-              <a
-                href={l.href}
-                onClick={(e) => scrollTo(e, l.href)}
-                data-cursor={l.label}
-                className="group relative inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--ink-2)] transition-colors hover:text-[var(--ink)]"
-              >
-                <span className="text-[var(--muted)] group-hover:text-[var(--clay)] transition-colors">
-                  {l.num}
-                </span>
-                <span className={`scribble-link ${active === l.href.slice(1) ? "is-active" : ""}`}>
-                  {l.label}
-                </span>
-              </a>
-            </Magnetic>
-          ))}
-        </div>
+        {/* Links */}
+        <ul className="hidden md:flex items-center gap-0.5">
+          {LINKS.map(l => {
+            const isActive = active === l.href.slice(1);
+            return (
+              <li key={l.href}>
+                <a
+                  href={l.href}
+                  onClick={e => go(e, l.href)}
+                  className={`group flex items-center gap-1.5 px-3 py-1.5 transition-colors ${
+                    isActive ? "text-[var(--volt)]" : "text-[var(--muted)] hover:text-[var(--text)]"
+                  }`}
+                >
+                  <span className="font-[family-name:var(--font-mono)] text-[9px] opacity-60">{l.n}</span>
+                  <span className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.16em]">{l.label}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
 
-        <Magnetic strength={14}>
-          <a
-            href="#contact"
-            onClick={(e) => scrollTo(e, "#contact")}
-            data-cursor="Hello"
-            className="group inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-2.5 text-[12px] font-medium text-[var(--paper)] transition-all hover:bg-[var(--clay)]"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--moss)] blink-soft" />
-            Let&rsquo;s talk
-          </a>
-        </Magnetic>
+        {/* CTA */}
+        <a
+          href="#contact"
+          onClick={e => go(e, "#contact")}
+          className="inline-flex items-center gap-2 border border-[var(--volt)] px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.18em] text-[var(--volt)] transition-all hover:bg-[var(--volt)] hover:text-[var(--bg)]"
+        >
+          Hire me
+        </a>
       </div>
     </nav>
   );

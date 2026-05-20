@@ -1,190 +1,135 @@
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────────────────────
-   Design tokens — warm, sculptural, editorial.
-   Avoid: indigo/purple gradients, generic glass, neon.
-   ───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────
+   DARK PRECISION — voltage green on near-black.
+   Inspired by scientific instruments, HUDs, semiconductor cleanrooms.
+   ───────────────────────────────────────────────────────────────────── */
 :root {
-  --bone:       #F1ECE3;   /* page background — warm off-white */
-  --bone-2:     #E8E1D4;   /* card / inset */
-  --bone-3:     #DCD2BF;   /* dividers, subtle borders */
-  --ink:        #1B1814;   /* primary text */
-  --ink-2:      #3B342D;   /* secondary text */
-  --muted:      #6E6258;   /* tertiary / captions */
-  --clay:       #B85C38;   /* primary accent — burnt terracotta */
-  --clay-2:     #8E3F22;   /* deeper clay for hover */
-  --moss:       #2F5D3F;   /* secondary accent — deep moss */
-  --ochre:      #C8932A;   /* subtle highlight */
-  --paper:      #FAF6EE;   /* lighter inset (light card on bone) */
+  --bg:        #111109;   /* near-black, barely warm           */
+  --bg-2:      #181816;   /* raised surface                    */
+  --bg-3:      #202020;   /* border / divider level            */
+  --text:      #EDE8DB;   /* warm white — primary              */
+  --text-2:    #A09890;   /* secondary text                    */
+  --muted:     #5C5850;   /* labels, captions                  */
+  --volt:      #D4FF4D;   /* acid chartreuse — the voltage     */
+  --volt-dim:  rgba(212,255,77,0.12);
+  --hot:       #FF5028;   /* orange-red — CTAs, emphasis       */
+  --hot-dim:   rgba(255,80,40,0.12);
+  --border:    #2A2925;   /* subtle structural lines           */
+  --border-2:  #3A3830;   /* slightly bolder                   */
 
-  --font-display: var(--font-instrument-serif), 'Times New Roman', serif;
-  --font-sans:    var(--font-inter-tight), system-ui, -apple-system, sans-serif;
-  --font-mono:    var(--font-jetbrains-mono), ui-monospace, monospace;
-
-  --grain-opacity: 0.045;
+  --font-display: var(--font-syne), 'Arial Black', sans-serif;
+  --font-body:    var(--font-syne), system-ui, sans-serif;
+  --font-mono:    var(--font-jetbrains), ui-monospace, monospace;
 }
 
 @theme inline {
-  --color-bone: var(--bone);
-  --color-bone-2: var(--bone-2);
-  --color-bone-3: var(--bone-3);
-  --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
-  --color-muted: var(--muted);
-  --color-clay: var(--clay);
-  --color-clay-2: var(--clay-2);
-  --color-moss: var(--moss);
-  --color-ochre: var(--ochre);
-  --color-paper: var(--paper);
-
-  --font-display: var(--font-display);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  --color-bg:      var(--bg);
+  --color-bg-2:    var(--bg-2);
+  --color-bg-3:    var(--bg-3);
+  --color-text:    var(--text);
+  --color-text-2:  var(--text-2);
+  --color-muted:   var(--muted);
+  --color-volt:    var(--volt);
+  --color-hot:     var(--hot);
+  --color-border:  var(--border);
+  --font-display:  var(--font-display);
+  --font-body:     var(--font-body);
+  --font-mono:     var(--font-mono);
 }
 
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
-html {
-  background: var(--bone);
-  color-scheme: light;
-}
+html { background: var(--bg); color-scheme: dark; scroll-behavior: smooth; }
 
 body {
-  background: var(--bone);
-  color: var(--ink);
-  font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Paper grain — applied to <main> via .paper class */
-.paper {
-  position: relative;
-  isolation: isolate;
-}
-.paper::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: var(--grain-opacity);
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-}
-
-::selection {
-  background: var(--clay);
-  color: var(--paper);
-}
-
-/* Custom scrollbar (subtle, on theme) */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track { background: var(--bone); }
-::-webkit-scrollbar-thumb {
-  background: var(--bone-3);
-  border-radius: 999px;
-  border: 2px solid var(--bone);
-}
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-/* Hide cursor when custom cursor is active — only on fine pointer devices */
+/* Fine pointer: hide system cursor */
 @media (pointer: fine) {
   .cursor-on, .cursor-on * { cursor: none !important; }
 }
 
-/* Hand-drawn underline (used by .scribble-link) */
-.scribble-link {
-  position: relative;
-  display: inline-block;
+/* Grid background — subtle blueprint lines */
+.grid-bg {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 80px 80px;
+  background-position: -1px -1px;
 }
-.scribble-link::after {
+
+/* Noise grain overlay */
+.grain::after {
   content: "";
-  position: absolute;
-  left: -0.05em;
-  right: -0.05em;
-  bottom: -0.18em;
-  height: 0.5em;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'><path d='M2 6 C 20 1, 40 11, 60 5 S 100 9, 118 4' fill='none' stroke='%23B85C38' stroke-width='2.2' stroke-linecap='round'/></svg>");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.scribble-link:hover::after,
-.scribble-link.is-active::after {
-  transform: scaleX(1);
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.7 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
 }
 
-/* Marker highlight for keywords */
-.marker {
-  background-image: linear-gradient(120deg, rgba(184, 92, 56, 0.22) 0%, rgba(184, 92, 56, 0.22) 100%);
-  background-repeat: no-repeat;
-  background-size: 100% 38%;
-  background-position: 0 80%;
-  padding-inline: 0.1em;
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--volt); }
+
+::selection { background: var(--volt); color: var(--bg); }
+
+/* Mono label */
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--muted);
 }
 
-/* Subtle drop-cap helper */
-.dropcap::first-letter {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 4em;
-  float: left;
-  line-height: 0.85;
-  padding-right: 0.1em;
-  padding-top: 0.08em;
-  color: var(--clay);
+/* Volt line — horizontal accent rule */
+.volt-line {
+  height: 1px;
+  background: linear-gradient(90deg, var(--volt) 0%, transparent 100%);
 }
+
+/* Clip-path reveal animation */
+@keyframes clip-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+.clip-reveal { animation: clip-reveal 0.9s cubic-bezier(0.77,0,0.18,1) both; }
 
 /* Marquee */
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-.marquee-track {
-  animation: marquee 38s linear infinite;
-  will-change: transform;
-}
+.marquee-run { animation: marquee 36s linear infinite; will-change: transform; }
 
-/* Subtle blink */
-@keyframes blink-soft {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.3; }
-}
-.blink-soft { animation: blink-soft 1.4s ease-in-out infinite; }
+/* Blink dot */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.blink { animation: blink 1.2s step-end infinite; }
 
-/* Float — used by ambient blob */
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  50%      { transform: translateY(-14px) rotate(2deg); }
-}
-.float-slow { animation: float-slow 9s ease-in-out infinite; }
-
-/* Reveal on scroll (manual class added by IntersectionObserver) */
+/* Reveal utility */
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
-              transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
 }
-.reveal.is-in {
-  opacity: 1;
-  transform: none;
-}
+.reveal.in { opacity: 1; transform: none; }
 
-/* For prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    transition-duration: 0.001ms !important;
-  }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Focus visible */
+:focus-visible { outline: 1px solid var(--volt); outline-offset: 3px; }

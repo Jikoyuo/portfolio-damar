@@ -1,155 +1,127 @@
 "use client";
-
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import Magnetic from "../Magnetic";
-import { HandArrow, BlobShape, StarBurst } from "../Scribbles";
+import { PROFILE } from "@/data/profile";
 
 export default function Hero() {
+  const [time, setTime] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const nameRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    setLoaded(true);
+    const fmt = () =>
+      new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        timeZone: "Asia/Jakarta", hour12: false,
+      }).format(new Date());
+    setTime(fmt());
+    const t = setInterval(() => setTime(fmt()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const go = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <section
-      id="index"
-      className="relative scroll-mt-32 overflow-hidden pb-24 pt-10 md:pt-20"
-    >
-      {/* Ambient sculptural blobs */}
-      <BlobShape
-        className="pointer-events-none absolute -left-32 top-32 h-[520px] w-[520px] float-slow"
-        color="var(--clay)"
-        opacity={0.10}
-      />
-      <BlobShape
-        className="pointer-events-none absolute -right-40 -bottom-20 h-[640px] w-[640px] float-slow"
-        color="var(--moss)"
-        opacity={0.07}
-      />
+    <section id="index" className="relative grid-bg min-h-[100svh] flex flex-col justify-between overflow-hidden">
+      {/* Top HUD bar */}
+      <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-3">
+        <span className="label">
+          Yogyakarta, Indonesia · <span className="text-[var(--text)]">{time}</span> WIB
+        </span>
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-[var(--volt)] blink" />
+          <span className="label text-[var(--volt)]">Available for work</span>
+        </div>
+      </div>
 
-      <div className="relative mx-auto max-w-7xl px-4">
-        {/* Issue / dateline */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-10 flex flex-wrap items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--muted)]"
-        >
-          <span>Edition&nbsp;Nº.01 — Selected Works &amp; Field Notes</span>
-          <span className="hidden md:inline">A handmade portfolio · est. 2024</span>
-        </motion.div>
-
-        {/* Big editorial headline grid */}
-        <div className="grid grid-cols-12 gap-x-4 gap-y-6 md:gap-y-10">
+      {/* Main content */}
+      <div className="flex flex-1 flex-col justify-center px-5 py-12">
+        {/* Giant name */}
+        <div className="relative overflow-hidden mb-4">
           <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="col-span-12 font-[family-name:var(--font-display)] leading-[0.86] tracking-[-0.02em] text-[var(--ink)]"
+            ref={nameRef}
+            className="font-[family-name:var(--font-display)] font-black leading-[0.88] tracking-tight text-[var(--text)] uppercase"
+            style={{ fontSize: "clamp(4rem, 16vw, 17rem)" }}
+            initial={{ y: "100%", opacity: 0 }}
+            animate={loaded ? { y: 0, opacity: 1 } : {}}
+            transition={{ duration: 0.9, ease: [0.77, 0, 0.18, 1] }}
           >
-            <span className="block text-[clamp(3rem,11vw,11rem)]">Soft-spoken</span>
-            <span className="block text-[clamp(3rem,11vw,11rem)] italic text-[var(--clay)]">
-              code,
-              <StarBurst className="ml-3 inline-block h-10 w-10 -translate-y-6 md:h-14 md:w-14" />
-            </span>
-            <span className="block text-[clamp(3rem,11vw,11rem)] -mt-1">
-              <span className="relative inline-block">
-                deliberate
-                <svg
-                  aria-hidden
-                  className="absolute -bottom-2 left-0 h-3 w-full text-[var(--clay)]"
-                  viewBox="0 0 600 14"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M4 8 C 80 1, 200 12, 320 6 S 540 12, 596 4"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    fill="none"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </span>{" "}
-              <span className="font-[family-name:var(--font-display)] italic">motion.</span>
-            </span>
+            Damar
           </motion.h1>
+        </div>
 
-          {/* Sidebar lockup: meta + tagline */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="col-span-12 md:col-span-5 md:col-start-1"
-          >
-            <div className="flex items-start gap-3">
-              <span className="mt-1.5 inline-block h-3 w-3 rounded-full bg-[var(--clay)]" />
-              <p className="max-w-md text-[15px] leading-relaxed text-[var(--ink-2)]">
-                I&rsquo;m <span className="marker font-medium">Chornael Damar Kesuma</span>{" "}
-                — a Yogyakarta-based web developer who spends his hours building
-                scalable frontends in JavaScript and patient backends in Go.
-                I&rsquo;m drawn to interfaces that feel hand-built, not assembled
-                from kits.
-              </p>
-            </div>
-          </motion.div>
+        {/* Rule + role row */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div className="flex items-center gap-5">
+            <div className="h-px w-24 bg-[var(--volt)]" />
+            <motion.div
+              initial={{ opacity: 0, x: -12 }}
+              animate={loaded ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
+              <p className="label text-[var(--text-2)]">{PROFILE.role} — {PROFILE.subRole}</p>
+            </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.8 }}
-            className="col-span-12 md:col-span-5 md:col-start-8 flex flex-col gap-6"
-          >
-            <dl className="grid grid-cols-3 gap-4 border-l border-[var(--bone-3)] pl-5">
-              {[
-                { k: "Role",      v: "Frontend Engineer" },
-                { k: "Focus",     v: "React · Next · Go" },
-                { k: "Since",     v: "2024" },
-              ].map((m) => (
-                <div key={m.k}>
-                  <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-                    {m.k}
-                  </dt>
-                  <dd className="mt-1 text-sm font-medium text-[var(--ink)]">{m.v}</dd>
-                </div>
-              ))}
-            </dl>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <Magnetic strength={18}>
-                <a
-                  href="#work"
-                  data-cursor="Browse"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="group inline-flex items-center gap-3 rounded-full bg-[var(--ink)] px-6 py-3 text-sm font-medium text-[var(--paper)] transition-colors hover:bg-[var(--clay)]"
-                >
-                  See selected works
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
-                </a>
-              </Magnetic>
-              <Magnetic strength={12}>
-                <a
-                  href="/cv.pdf"
-                  download
-                  data-cursor="PDF"
-                  className="group inline-flex items-center gap-2 rounded-full border border-[var(--bone-3)] bg-[var(--paper)] px-5 py-3 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--clay)] hover:text-[var(--clay)]"
-                >
-                  Download CV
-                </a>
-              </Magnetic>
-            </div>
-          </motion.div>
-
-          {/* Scroll hint */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            className="col-span-12 mt-6 flex items-center gap-4"
+            animate={loaded ? { opacity: 1 } : {}}
+            transition={{ delay: 0.7 }}
+            className="flex flex-wrap items-center gap-3"
           >
-            <HandArrow className="h-10 w-12 -rotate-12 text-[var(--clay)]" />
-            <span className="font-[family-name:var(--font-display)] italic text-lg text-[var(--ink-2)]">
-              keep reading, the good stuff is below
-            </span>
+            <a
+              href="#work"
+              onClick={e => go(e, "work")}
+              className="group inline-flex items-center gap-3 bg-[var(--volt)] px-6 py-3 font-[family-name:var(--font-mono)] text-[12px] uppercase tracking-[0.14em] text-[var(--bg)] transition-all hover:bg-[var(--text)]"
+            >
+              View work
+              <span className="transition-transform group-hover:translate-x-1">→</span>
+            </a>
+            <a
+              href="/cv.pdf"
+              download
+              className="inline-flex items-center gap-2 border border-[var(--border-2)] px-5 py-3 font-[family-name:var(--font-mono)] text-[12px] uppercase tracking-[0.14em] text-[var(--text-2)] transition-all hover:border-[var(--text)] hover:text-[var(--text)]"
+            >
+              Download CV
+            </a>
           </motion.div>
         </div>
+
+        {/* Tagline */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={loaded ? { opacity: 1 } : {}}
+          transition={{ delay: 0.85 }}
+          className="mt-10 max-w-xl font-[family-name:var(--font-mono)] text-[13px] leading-[1.8] text-[var(--muted)]"
+        >
+          {PROFILE.tagline}
+        </motion.p>
+      </div>
+
+      {/* Bottom HUD bar */}
+      <div className="flex items-center justify-between border-t border-[var(--border)] px-5 py-3">
+        <div className="flex items-center gap-6">
+          {[
+            { href: PROFILE.socials.github,   label: "Github" },
+            { href: PROFILE.socials.linkedin,  label: "LinkedIn" },
+            { href: PROFILE.socials.email,     label: "Email" },
+          ].map(s => (
+            <a
+              key={s.label}
+              href={s.href}
+              target={s.label !== "Email" ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              className="label hover:text-[var(--volt)] transition-colors"
+            >
+              {s.label} ↗
+            </a>
+          ))}
+        </div>
+        <span className="label">Scroll to explore ↓</span>
       </div>
     </section>
   );

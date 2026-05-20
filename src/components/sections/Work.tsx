@@ -1,198 +1,193 @@
 "use client";
-
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ApiProject } from "@/lib/api";
-import SectionMark from "../SectionMark";
-import { HandArrow } from "../Scribbles";
-import ProjectSheet from "../ProjectSheet";
+import { ExternalLink, Github, X } from "lucide-react";
 
 type Filter = "All" | "Office" | "Personal" | "Campus";
 const FILTERS: Filter[] = ["All", "Office", "Personal", "Campus"];
 
-interface Props {
-  projects: ApiProject[];
-  apiBase: string;
-}
+interface Props { projects: ApiProject[]; apiBase: string; }
 
 export default function Work({ projects, apiBase }: Props) {
   const [filter, setFilter] = useState<Filter>("All");
-  const [hovered, setHovered] = useState<ApiProject | null>(null);
   const [selected, setSelected] = useState<ApiProject | null>(null);
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const listRef = useRef<HTMLDivElement>(null);
+  const [imgIdx, setImgIdx] = useState(0);
 
   const filtered = useMemo(
-    () => (filter === "All" ? projects : projects.filter((p) => p.type === filter)),
+    () => filter === "All" ? projects : projects.filter(p => p.type === filter),
     [filter, projects]
   );
 
-  const onMove = (e: React.MouseEvent) => {
-    const r = listRef.current?.getBoundingClientRect();
-    if (!r) return;
-    setMouse({ x: e.clientX - r.left, y: e.clientY - r.top });
+  const resolve = (img: string) => {
+    if (!img || img.includes("/api/placeholder")) return null;
+    if (/^https?:\/\//.test(img)) return img;
+    if (img.startsWith("/")) return img;
+    return `${apiBase}/${img}`;
   };
 
-  const resolveImage = (img: string) => {
-    if (!img) return null;
-    if (/^https?:\/\//.test(img)) return img;
-    if (img.startsWith("/api/placeholder")) return null;
-    if (img.startsWith("/")) return img;
-    return `${apiBase}${img.startsWith("/") ? "" : "/"}${img}`;
+  const select = (p: ApiProject) => {
+    setSelected(s => s?.id === p.id ? null : p);
+    setImgIdx(0);
   };
+
+  const validImgs = selected ? (selected.images || []).map(resolve).filter((u): u is string => !!u) : [];
 
   return (
-    <section id="work" className="relative scroll-mt-32 py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-4">
-        <SectionMark
-          number="04"
-          kicker="A short shelf"
-          title="Selected"
-          tagline="works."
-        />
+    <section id="work" className="py-28 md:py-36 border-t border-[var(--border)]">
+      <div className="mx-auto max-w-7xl px-5">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-16">
+          <span className="label text-[var(--volt)]">§ 02</span>
+          <div className="h-px flex-1 bg-[var(--border)]" />
+          <span className="label">Selected Work</span>
+        </div>
 
         {/* Filters */}
-        <div className="mb-10 flex flex-wrap items-center gap-4">
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-            Filter
-          </span>
-          <div className="h-px flex-1 bg-[var(--bone-3)]" />
-          <ul className="flex flex-wrap items-center gap-1">
-            {FILTERS.map((f) => {
-              const isActive = filter === f;
-              const count = f === "All" ? projects.length : projects.filter((p) => p.type === f).length;
-              return (
-                <li key={f}>
-                  <button
-                    onClick={() => setFilter(f)}
-                    data-cursor={f}
-                    className={`group inline-flex items-baseline gap-1.5 rounded-full border px-4 py-1.5 text-[12.5px] transition-all ${
-                      isActive
-                        ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)]"
-                        : "border-[var(--bone-3)] text-[var(--ink-2)] hover:border-[var(--clay)] hover:text-[var(--clay)]"
-                    }`}
-                  >
-                    {f}
-                    <span
-                      className={`font-mono text-[10px] ${
-                        isActive ? "text-[var(--paper)]/60" : "text-[var(--muted)] group-hover:text-[var(--clay)]"
-                      }`}
-                    >
-                      {String(count).padStart(2, "0")}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+        <div className="flex flex-wrap gap-2 mb-12">
+          {FILTERS.map(f => {
+            const cnt = f === "All" ? projects.length : projects.filter(p => p.type === f).length;
+            return (
+              <button
+                key={f}
+                onClick={() => { setFilter(f); setSelected(null); }}
+                className={`flex items-center gap-2 px-4 py-1.5 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.16em] border transition-all ${
+                  filter === f
+                    ? "border-[var(--volt)] bg-[var(--volt-dim)] text-[var(--volt)]"
+                    : "border-[var(--border)] text-[var(--muted)] hover:border-[var(--border-2)] hover:text-[var(--text)]"
+                }`}
+              >
+                {f}
+                <span className="opacity-50">{String(cnt).padStart(2, "0")}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* List with hover preview */}
-        <div
-          ref={listRef}
-          onMouseMove={onMove}
-          onMouseLeave={() => setHovered(null)}
-          className="relative"
-        >
+        {/* Project rows */}
+        <div className="border-t border-[var(--border)]">
           {filtered.length === 0 && (
-            <p className="py-20 text-center font-[family-name:var(--font-display)] italic text-3xl text-[var(--muted)]">
-              Nothing in this drawer yet.
-            </p>
+            <p className="py-16 text-center label">No projects in this category yet.</p>
           )}
-
-          <ul className={`relative ${hovered ? "[&_li[data-row]:not(.is-hover)]:opacity-30" : ""}`}>
-            {filtered.map((p, i) => {
-              const hoverImg = resolveImage(p.images?.[0] || "");
-              return (
-                <li
-                  key={p.id}
-                  data-row
-                  className={`is-row group border-t border-[var(--bone-3)] last:border-b transition-opacity duration-300 ${
-                    hovered?.id === p.id ? "is-hover" : ""
+          {filtered.map((p, i) => {
+            const isOpen = selected?.id === p.id;
+            return (
+              <div key={p.id}>
+                <button
+                  onClick={() => select(p)}
+                  className={`group w-full border-b border-[var(--border)] transition-colors ${
+                    isOpen ? "bg-[var(--volt-dim)]" : "hover:bg-[var(--bg-2)]"
                   }`}
-                  onMouseEnter={() => setHovered(p)}
                 >
-                  <button
-                    onClick={() => setSelected(p)}
-                    data-cursor="Open"
-                    className="grid w-full grid-cols-12 items-baseline gap-4 py-6 md:py-8 text-left"
-                  >
-                    <span className="col-span-2 md:col-span-1 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted)]">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="col-span-10 md:col-span-6 font-[family-name:var(--font-display)] text-3xl md:text-5xl leading-[1] text-[var(--ink)] transition-colors group-hover:text-[var(--clay)]">
+                  <div className="grid grid-cols-12 items-center gap-4 px-0 py-5 md:py-6">
+                    <span className="col-span-1 label text-right">{String(i + 1).padStart(2, "0")}</span>
+                    <h3 className={`col-span-7 md:col-span-6 text-left font-[family-name:var(--font-display)] font-bold text-2xl md:text-3xl tracking-tight transition-colors ${
+                      isOpen ? "text-[var(--volt)]" : "text-[var(--text)] group-hover:text-[var(--volt)]"
+                    }`}>
                       {p.title}
-                      <span className="font-[family-name:var(--font-display)] italic text-[var(--muted)]/70"> </span>
                     </h3>
-                    <span className="hidden md:block md:col-span-3 text-sm text-[var(--ink-2)] truncate">
-                      {(p.stack || []).slice(0, 3).join(" · ")}
+                    <span className="col-span-2 hidden md:block label">{p.type}</span>
+                    <span className="col-span-3 md:col-span-2 hidden md:block label truncate">
+                      {(p.stack || []).slice(0, 2).join(" · ")}
                     </span>
-                    <span className="hidden md:flex md:col-span-2 items-center justify-end gap-2 text-[var(--muted)] group-hover:text-[var(--clay)]">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.22em]">
-                        {p.type}
-                      </span>
-                      <HandArrow className="h-6 w-7 -rotate-12 opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1" />
+                    <span className={`col-span-4 md:col-span-1 label text-right transition-transform ${isOpen ? "rotate-45 text-[var(--volt)]" : "group-hover:text-[var(--text)]"}`}>
+                      ✕
                     </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+                  </div>
+                </button>
 
-          {/* Floating hover preview */}
-          <AnimatePresence>
-            {hovered && (
-              <motion.div
-                key={hovered.id}
-                initial={{ opacity: 0, scale: 0.94 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.94 }}
-                transition={{ duration: 0.18 }}
-                style={{
-                  left: Math.min(mouse.x + 24, (listRef.current?.clientWidth || 0) - 320),
-                  top: Math.max(mouse.y - 140, 16),
-                }}
-                className="pointer-events-none absolute hidden md:block z-20 h-[260px] w-[340px] overflow-hidden rounded-2xl border border-[var(--bone-3)] bg-[var(--paper)] shadow-[0_30px_80px_-30px_rgba(27,24,20,0.5)]"
-              >
-                {(() => {
-                  const url = resolveImage(hovered.images?.[0] || "");
-                  if (url) {
-                    return (
-                      <Image
-                        src={url}
-                        alt={hovered.title}
-                        fill
-                        sizes="340px"
-                        className="object-cover"
-                      />
-                    );
-                  }
-                  return (
-                    <div className="grid h-full w-full place-items-center bg-gradient-to-br from-[var(--bone-2)] to-[var(--paper)] p-6 text-center font-[family-name:var(--font-display)] italic text-2xl text-[var(--muted)]">
-                      no image yet
-                    </div>
-                  );
-                })()}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--ink)]/85 to-transparent px-4 pb-3 pt-10">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--paper)]/80">
-                    {hovered.type}
-                  </div>
-                  <div className="font-[family-name:var(--font-display)] text-xl text-[var(--paper)]">
-                    {hovered.title}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                {/* Inline expand */}
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.4, ease: [0.77, 0, 0.18, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border-b border-[var(--border)] bg-[var(--bg-2)] px-5 py-8">
+                        <div className="grid grid-cols-12 gap-8">
+                          {/* Left: image */}
+                          <div className="col-span-12 md:col-span-5">
+                            {validImgs.length > 0 ? (
+                              <div className="relative aspect-[4/3] overflow-hidden bg-[var(--bg-3)]">
+                                <AnimatePresence mode="wait">
+                                  <motion.div
+                                    key={imgIdx}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="absolute inset-0"
+                                  >
+                                    <Image src={validImgs[imgIdx]} alt={p.title} fill sizes="(max-width:768px) 100vw, 40vw" className="object-cover" />
+                                  </motion.div>
+                                </AnimatePresence>
+                                {validImgs.length > 1 && (
+                                  <div className="absolute bottom-3 left-3 flex gap-1.5">
+                                    {validImgs.map((_, ii) => (
+                                      <button key={ii} onClick={() => setImgIdx(ii)}
+                                        className={`h-1.5 transition-all ${ii === imgIdx ? "w-6 bg-[var(--volt)]" : "w-1.5 bg-[var(--border-2)]"}`}
+                                      />
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex aspect-[4/3] items-center justify-center bg-[var(--bg-3)] label">
+                                No preview
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Right: details */}
+                          <div className="col-span-12 md:col-span-7 flex flex-col gap-5">
+                            <p className="font-[family-name:var(--font-mono)] text-[13.5px] leading-[1.85] text-[var(--text-2)]">
+                              {p.description}
+                            </p>
+
+                            {(p.stack || []).length > 0 && (
+                              <div>
+                                <div className="label mb-3">Stack</div>
+                                <div className="flex flex-wrap gap-2">
+                                  {p.stack.map(s => (
+                                    <span key={s} className="border border-[var(--border-2)] px-3 py-1 font-[family-name:var(--font-mono)] text-[11px] text-[var(--text-2)]">
+                                      {s}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="flex flex-wrap gap-3 mt-auto pt-4 border-t border-[var(--border)]">
+                              {p.demoUrl && (
+                                <a href={p.demoUrl} target="_blank" rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 bg-[var(--volt)] px-5 py-2.5 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.16em] text-[var(--bg)] hover:bg-[var(--text)] transition-colors"
+                                >
+                                  Live demo <ExternalLink size={12} />
+                                </a>
+                              )}
+                              {p.githubUrl && (
+                                <a href={p.githubUrl} target="_blank" rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 border border-[var(--border-2)] px-5 py-2.5 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.16em] text-[var(--text-2)] hover:border-[var(--text)] hover:text-[var(--text)] transition-colors"
+                                >
+                                  Source <Github size={12} />
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
       </div>
-
-      <ProjectSheet
-        project={selected}
-        apiBase={apiBase}
-        onClose={() => setSelected(null)}
-      />
     </section>
   );
 }
