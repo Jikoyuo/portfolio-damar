@@ -1,35 +1,190 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+   Design tokens — warm, sculptural, editorial.
+   Avoid: indigo/purple gradients, generic glass, neon.
+   ───────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bone:       #F1ECE3;   /* page background — warm off-white */
+  --bone-2:     #E8E1D4;   /* card / inset */
+  --bone-3:     #DCD2BF;   /* dividers, subtle borders */
+  --ink:        #1B1814;   /* primary text */
+  --ink-2:      #3B342D;   /* secondary text */
+  --muted:      #6E6258;   /* tertiary / captions */
+  --clay:       #B85C38;   /* primary accent — burnt terracotta */
+  --clay-2:     #8E3F22;   /* deeper clay for hover */
+  --moss:       #2F5D3F;   /* secondary accent — deep moss */
+  --ochre:      #C8932A;   /* subtle highlight */
+  --paper:      #FAF6EE;   /* lighter inset (light card on bone) */
+
+  --font-display: var(--font-instrument-serif), 'Times New Roman', serif;
+  --font-sans:    var(--font-inter-tight), system-ui, -apple-system, sans-serif;
+  --font-mono:    var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --grain-opacity: 0.045;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bone: var(--bone);
+  --color-bone-2: var(--bone-2);
+  --color-bone-3: var(--bone-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-clay: var(--clay);
+  --color-clay-2: var(--clay-2);
+  --color-moss: var(--moss);
+  --color-ochre: var(--ochre);
+  --color-paper: var(--paper);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  background: var(--bone);
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  overflow-x: hidden;
 }
 
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
+/* Paper grain — applied to <main> via .paper class */
+.paper {
+  position: relative;
+  isolation: isolate;
+}
+.paper::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-.animate-shimmer {
-  animation: shimmer 2s infinite ease-in-out;
+::selection {
+  background: var(--clay);
+  color: var(--paper);
+}
+
+/* Custom scrollbar (subtle, on theme) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track { background: var(--bone); }
+::-webkit-scrollbar-thumb {
+  background: var(--bone-3);
+  border-radius: 999px;
+  border: 2px solid var(--bone);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Hide cursor when custom cursor is active — only on fine pointer devices */
+@media (pointer: fine) {
+  .cursor-on, .cursor-on * { cursor: none !important; }
+}
+
+/* Hand-drawn underline (used by .scribble-link) */
+.scribble-link {
+  position: relative;
+  display: inline-block;
+}
+.scribble-link::after {
+  content: "";
+  position: absolute;
+  left: -0.05em;
+  right: -0.05em;
+  bottom: -0.18em;
+  height: 0.5em;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'><path d='M2 6 C 20 1, 40 11, 60 5 S 100 9, 118 4' fill='none' stroke='%23B85C38' stroke-width='2.2' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scribble-link:hover::after,
+.scribble-link.is-active::after {
+  transform: scaleX(1);
+}
+
+/* Marker highlight for keywords */
+.marker {
+  background-image: linear-gradient(120deg, rgba(184, 92, 56, 0.22) 0%, rgba(184, 92, 56, 0.22) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 38%;
+  background-position: 0 80%;
+  padding-inline: 0.1em;
+}
+
+/* Subtle drop-cap helper */
+.dropcap::first-letter {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 4em;
+  float: left;
+  line-height: 0.85;
+  padding-right: 0.1em;
+  padding-top: 0.08em;
+  color: var(--clay);
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 38s linear infinite;
+  will-change: transform;
+}
+
+/* Subtle blink */
+@keyframes blink-soft {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+.blink-soft { animation: blink-soft 1.4s ease-in-out infinite; }
+
+/* Float — used by ambient blob */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50%      { transform: translateY(-14px) rotate(2deg); }
+}
+.float-slow { animation: float-slow 9s ease-in-out infinite; }
+
+/* Reveal on scroll (manual class added by IntersectionObserver) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* For prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
 }

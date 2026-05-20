@@ -1,0 +1,37 @@
+# ─── Credentials & secrets ───────────────────────────────────────────
+.env
+.env.*
+!.env.example
+cloudrun-env.yaml
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ─── Go build artifacts ──────────────────────────────────────────────
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+tmp/
+server          # compiled binary name
+
+# ─── Uploads (local ephemeral storage) ──────────────────────────────
+uploads/
+
+# ─── Go module cache (not needed in repo) ────────────────────────────
+vendor/
+
+# ─── OS & editor ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.iml
+
+# ─── Logs ────────────────────────────────────────────────────────────
+*.log

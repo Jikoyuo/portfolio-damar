@@ -1,0 +1,11 @@
+.env
+.env.local
+*.md
+uploads/
+tmp/
+bin/
+.git/
+.gitignore
+.vscode/
+.idea/
+*.exe

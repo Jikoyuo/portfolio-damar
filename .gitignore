@@ -1,8 +1,17 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ─── Credentials & secrets ───────────────────────────────────────────
+.env
+.env.*
+!.env.example       # template boleh masuk git
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
 
-# dependencies
-/node_modules
-/.pnp
+# ─── Node / Next.js ──────────────────────────────────────────────────
+node_modules/
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -10,35 +19,81 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
+# Build output
+.next/
+out/
+build/
+dist/
 
-# next.js
-/.next/
-/out/
+# Cache
+.cache/
+.turbo/
+.swc/
 
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
+# ─── Logs ────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# ─── OS & editor ─────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+.vscode/
+!.vscode/extensions.json   # boleh share rekomendasi ekstensi
+.idea/
+*.iml
+*.iws
+*.ipr
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+nbproject/
+.project
+.classpath
+.settings/
+
+# ─── Testing ─────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+
+# ─── Deployment tools ────────────────────────────────────────────────
 .vercel
-.env*.local
+# backend build artifact — jangan commit binary
+backend/bin/
+backend/tmp/
+backend/uploads/    # local upload dir, ephemeral
+backend/*.exe
+backend/server
+
+# ─── AI tooling (Claude Code, Cursor, Copilot workspace) ────────────
+.claude/
+.cursor/
+.copilot/
+.aider*
+
+# ─── Misc ────────────────────────────────────────────────────────────
+*.bak
+*.tmp
+*.swp
+*.swo
+*~
+.sass-cache/
+.eslintcache
+.stylelintcache
