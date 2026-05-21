@@ -6,7 +6,6 @@ export default function Cursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const dotRef  = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false);
-  const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: fine)");
@@ -26,6 +25,7 @@ export default function Cursor() {
         dotRef.current.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
       }
     };
+
     const tick = () => {
       rx += (mx - rx) * 0.18;
       ry += (my - ry) * 0.18;
@@ -36,15 +36,11 @@ export default function Cursor() {
       raf = requestAnimationFrame(tick);
     };
 
-    const enter = (e: Event) => {
-      const t = e.currentTarget as HTMLElement;
-      const l = t.getAttribute("data-cursor");
-      if (l) setLabel(l);
-      targetScale = l ? 2.6 : 1.6;
+    const enter = () => {
+      targetScale = 1.8;
       ringRef.current?.classList.add("active");
     };
     const leave = () => {
-      setLabel(null);
       targetScale = 1;
       ringRef.current?.classList.remove("active");
     };
@@ -60,7 +56,6 @@ export default function Cursor() {
     window.addEventListener("mousemove", onMove, { passive: true });
     raf = requestAnimationFrame(tick);
 
-    // Re-bind on DOM changes (route transitions)
     const mo = new MutationObserver(() => {
       const next = document.querySelectorAll<HTMLElement>(
         'a, button, [role="button"], [data-cursor]'
@@ -90,24 +85,25 @@ export default function Cursor() {
 
   return (
     <>
+      {/* Inner dot — snaps directly to cursor */}
       <div
         ref={dotRef}
         aria-hidden
         className="pointer-events-none fixed left-0 top-0 z-[200] h-1.5 w-1.5 rounded-full bg-[var(--ink)]"
         style={{ willChange: "transform" }}
       />
+
+      {/* Outer ring — lags behind, scales on hover */}
       <div
         ref={ringRef}
         aria-hidden
-        className="cursor-ring pointer-events-none fixed left-0 top-0 z-[199] h-9 w-9 rounded-full border border-[var(--ink)]/40 flex items-center justify-center text-[10px] uppercase tracking-[0.18em] text-[var(--ink)] transition-colors duration-200"
-        style={{ willChange: "transform", fontFamily: "var(--font-mono)" }}
+        className="cursor-ring pointer-events-none fixed left-0 top-0 z-[199] h-9 w-9 rounded-full border border-[var(--ink)]/35 transition-[background-color,border-color] duration-200"
+        style={{ willChange: "transform" }}
       >
-        <span className="px-1.5 leading-none">{label}</span>
         <style jsx>{`
           .cursor-ring.active {
-            background: var(--clay);
+            background: rgba(181, 57, 30, 0.12);
             border-color: var(--clay);
-            color: var(--paper);
           }
         `}</style>
       </div>
