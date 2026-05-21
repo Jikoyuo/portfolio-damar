@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAdminAuth } from "@/components/admin/AdminAuth";
 import { api, ApiProject, API_BASE } from "@/lib/api";
-import { Edit3, Trash2, Plus, ExternalLink, RefreshCw } from "lucide-react";
 
 export default function AdminHomePage() {
   const { token, ready } = useAdminAuth();
@@ -33,7 +32,7 @@ export default function AdminHomePage() {
 
   const onDelete = async (id: number) => {
     if (!token) return;
-    if (!confirm("Hapus project ini? Aksi ini tidak bisa di-undo.")) return;
+    if (!confirm("Hapus project ini? Tidak bisa di-undo.")) return;
     try {
       setRemoving(id);
       await api.deleteProject(id, token);
@@ -50,7 +49,7 @@ export default function AdminHomePage() {
     if (/^https?:\/\//.test(img)) return img;
     if (img.startsWith("/api/placeholder")) return null;
     if (img.startsWith("/")) return img;
-    return `${API_BASE}${img.startsWith("/") ? "" : "/"}${img}`;
+    return `${API_BASE}/${img}`;
   };
 
   if (!ready) return null;
@@ -59,120 +58,106 @@ export default function AdminHomePage() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-            Studio
-          </div>
-          <h1 className="mt-1 font-[family-name:var(--font-display)] text-5xl text-[var(--ink)]">
-            Projects <span className="italic text-[var(--clay)]">— {items.length}</span>
+          <div className="label mb-1">Studio</div>
+          <h1 className="text-[22px] font-medium text-[var(--text)]">
+            Projects <span className="text-[var(--text-3)] font-normal">({items.length})</span>
           </h1>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={load}
-            className="inline-flex items-center gap-2 rounded-full border border-[var(--bone-3)] bg-[var(--paper)] px-4 py-2 text-[13px] text-[var(--ink-2)] transition-colors hover:border-[var(--clay)] hover:text-[var(--clay)]"
+            className="rounded-sm border border-[var(--border)] px-3 py-1.5 text-[12.5px] text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--bg-2)] transition-colors"
           >
-            <RefreshCw size={13} /> Refresh
+            Refresh
           </button>
           <Link
             href="/admin/projects/new"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-2 text-[13px] font-medium text-[var(--paper)] transition-colors hover:bg-[var(--clay)]"
+            className="rounded-sm bg-[var(--text)] px-3 py-1.5 text-[12.5px] font-medium text-[var(--bg)] hover:bg-[var(--accent)] transition-colors"
           >
-            <Plus size={14} /> New project
+            + New project
           </Link>
         </div>
       </div>
 
       {err && (
-        <div className="rounded-2xl border border-[var(--clay)]/40 bg-[var(--clay)]/8 px-4 py-3 text-[13px] text-[var(--clay-2)]">
+        <div className="rounded-sm border border-[var(--accent)]/40 bg-[var(--accent)]/8 px-4 py-3 text-[13px] text-[var(--accent)]">
           {err}
         </div>
       )}
 
-      <div className="overflow-hidden rounded-3xl border border-[var(--bone-3)] bg-[var(--paper)]">
-        {loading ? (
-          <div className="grid place-items-center py-20 font-[family-name:var(--font-display)] italic text-2xl text-[var(--muted)]">
-            loading the archive…
-          </div>
-        ) : items.length === 0 ? (
-          <div className="grid place-items-center gap-2 py-20">
-            <div className="font-[family-name:var(--font-display)] italic text-3xl text-[var(--muted)]">
-              empty shelf.
-            </div>
-            <Link
-              href="/admin/projects/new"
-              className="text-[13px] text-[var(--clay)] underline decoration-dotted underline-offset-4"
-            >
-              Add your first project →
-            </Link>
-          </div>
-        ) : (
-          <ul>
-            {items.map((p) => {
-              const thumb = resolveImage(p.images?.[0] || "");
-              return (
-                <li
-                  key={p.id}
-                  className="grid grid-cols-12 items-center gap-4 border-b border-[var(--bone-3)] px-5 py-4 last:border-b-0 hover:bg-[var(--bone-2)]/40"
-                >
-                  <div className="col-span-1 relative aspect-square overflow-hidden rounded-lg bg-[var(--bone-2)]">
-                    {thumb ? (
-                      <Image src={thumb} alt={p.title} fill sizes="48px" className="object-cover" />
-                    ) : (
-                      <div className="grid h-full w-full place-items-center font-mono text-[9px] uppercase text-[var(--muted)]">
-                        no img
-                      </div>
-                    )}
+      {loading ? (
+        <div className="py-16 text-center text-[13px] text-[var(--text-3)]">
+          loading the archive…
+        </div>
+      ) : items.length === 0 ? (
+        <div className="border-y border-[var(--border)] py-16 text-center">
+          <p className="text-[14px] text-[var(--text-2)]">No projects yet.</p>
+          <Link
+            href="/admin/projects/new"
+            className="mt-3 inline-block text-[13px] text-[var(--accent)] hover:underline"
+          >
+            Add your first project →
+          </Link>
+        </div>
+      ) : (
+        <ul className="border-t border-[var(--border)] divide-y divide-[var(--border)]">
+          {items.map((p) => {
+            const thumb = resolveImage(p.images?.[0] || "");
+            return (
+              <li
+                key={p.id}
+                className="grid grid-cols-12 items-center gap-3 py-3 transition-colors hover:bg-[var(--bg-2)] px-2 -mx-2"
+              >
+                <div className="col-span-2 sm:col-span-1 relative aspect-square overflow-hidden rounded-sm bg-[var(--bg-3)] border border-[var(--border)]">
+                  {thumb ? (
+                    <Image src={thumb} alt={p.title} fill sizes="48px" className="object-cover" />
+                  ) : (
+                    <div className="grid h-full w-full place-items-center label">—</div>
+                  )}
+                </div>
+                <div className="col-span-7 sm:col-span-6">
+                  <Link
+                    href={`/admin/projects/${p.id}/edit`}
+                    className="block truncate text-[14px] text-[var(--text)] hover:text-[var(--accent)] transition-colors"
+                  >
+                    {p.title}
+                  </Link>
+                  <div className="mt-0.5 truncate text-[12px] text-[var(--text-2)]">
+                    {(p.stack || []).join(", ")}
                   </div>
-                  <div className="col-span-7 md:col-span-6">
-                    <Link
-                      href={`/admin/projects/${p.id}/edit`}
-                      className="block truncate font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] hover:text-[var(--clay)]"
-                    >
-                      {p.title}
-                    </Link>
-                    <div className="mt-0.5 truncate text-[12px] text-[var(--muted)]">
-                      {(p.stack || []).join(" · ")}
-                    </div>
-                  </div>
-                  <div className="col-span-2 hidden md:block">
-                    <span className="inline-block rounded-full border border-[var(--bone-3)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--ink-2)]">
-                      {p.type}
-                    </span>
-                  </div>
-                  <div className="col-span-4 md:col-span-3 flex items-center justify-end gap-1.5">
-                    {p.demoUrl && (
-                      <a
-                        href={p.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="Open demo"
-                        className="grid h-8 w-8 place-items-center rounded-full border border-[var(--bone-3)] text-[var(--ink-2)] transition-colors hover:border-[var(--clay)] hover:text-[var(--clay)]"
-                      >
-                        <ExternalLink size={13} />
-                      </a>
-                    )}
-                    <Link
-                      href={`/admin/projects/${p.id}/edit`}
-                      title="Edit"
-                      className="grid h-8 w-8 place-items-center rounded-full border border-[var(--bone-3)] text-[var(--ink-2)] transition-colors hover:border-[var(--clay)] hover:text-[var(--clay)]"
-                    >
-                      <Edit3 size={13} />
-                    </Link>
-                    <button
-                      disabled={removing === p.id}
-                      onClick={() => onDelete(p.id)}
-                      title="Delete"
-                      className="grid h-8 w-8 place-items-center rounded-full border border-[var(--bone-3)] text-[var(--ink-2)] transition-colors hover:border-[var(--clay)] hover:bg-[var(--clay)] hover:text-[var(--paper)] disabled:opacity-50"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
+                </div>
+                <div className="hidden sm:block sm:col-span-2 label">
+                  {p.type}
+                </div>
+                <div className="col-span-3 sm:col-span-3 flex items-center justify-end gap-2">
+                  <Link
+                    href={`/work/${p.id}`}
+                    target="_blank"
+                    className="text-[12.5px] text-[var(--text-2)] hover:text-[var(--text)] transition-colors"
+                  >
+                    View
+                  </Link>
+                  <span className="text-[var(--border)]">·</span>
+                  <Link
+                    href={`/admin/projects/${p.id}/edit`}
+                    className="text-[12.5px] text-[var(--text-2)] hover:text-[var(--text)] transition-colors"
+                  >
+                    Edit
+                  </Link>
+                  <span className="text-[var(--border)]">·</span>
+                  <button
+                    disabled={removing === p.id}
+                    onClick={() => onDelete(p.id)}
+                    className="text-[12.5px] text-[var(--text-2)] hover:text-[var(--accent)] transition-colors disabled:opacity-40"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

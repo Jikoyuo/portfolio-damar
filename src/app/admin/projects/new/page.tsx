@@ -10,11 +10,9 @@ export default function NewProjectPage() {
   return (
     <div className="space-y-8">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-          Studio · new entry
-        </div>
-        <h1 className="mt-1 font-[family-name:var(--font-display)] text-5xl text-[var(--ink)]">
-          Add a <span className="italic text-[var(--clay)]">project.</span>
+        <div className="label mb-1">Studio · new entry</div>
+        <h1 className="text-[22px] font-medium text-[var(--text)]">
+          Add a project
         </h1>
       </div>
       <ProjectForm />

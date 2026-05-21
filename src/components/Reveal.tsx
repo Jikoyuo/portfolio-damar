@@ -1,26 +1,30 @@
 "use client";
 import { useEffect, useRef, ReactNode } from "react";
 
-interface Props {
+export default function Reveal({
+  children,
+  delay = 0,
+  className,
+  as: Tag = "div",
+}: {
   children: ReactNode;
-  className?: string;
   delay?: number;
+  className?: string;
   as?: keyof React.JSX.IntrinsicElements;
-}
-
-export default function Reveal({ children, className, delay = 0, as: Tag = "div" }: Props) {
+}) {
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) {
-          setTimeout(() => el.classList.add("in"), delay);
-          io.unobserve(el);
-        }
-      }),
-      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setTimeout(() => el.classList.add("in"), delay);
+            io.unobserve(el);
+          }
+        }),
+      { threshold: 0.1, rootMargin: "0px 0px -5% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();

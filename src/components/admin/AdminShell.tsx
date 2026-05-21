@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { useAdminAuth } from "./AdminAuth";
-import { LogOut, LayoutGrid, Plus, ArrowLeft } from "lucide-react";
 
 export default function AdminShell({ children }: { children: ReactNode }) {
   const { username, logout, ready } = useAdminAuth();
@@ -12,67 +11,56 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const isLogin = pathname === "/admin/login";
 
   return (
-    <div className="min-h-screen bg-[var(--bone)] text-[var(--ink)]">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       {!isLogin && (
-        <header className="sticky top-0 z-30 border-b border-[var(--bone-3)] bg-[var(--bone)]/85 backdrop-blur-xl">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--bg)]/90 backdrop-blur">
+          <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
             <div className="flex items-center gap-4">
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
+                className="text-[12.5px] text-[var(--text-2)] hover:text-[var(--text)] transition-colors"
                 aria-label="Back to public site"
               >
-                <ArrowLeft size={14} />
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em]">
-                  Public site
-                </span>
+                ← Public site
               </Link>
-              <span className="h-5 w-px bg-[var(--bone-3)]" />
-              <Link
-                href="/admin"
-                className="inline-flex items-baseline gap-2 text-[var(--ink)]"
-              >
-                <span className="font-[family-name:var(--font-display)] italic text-2xl leading-none">
-                  damar
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--clay)]">
-                  /studio
-                </span>
+              <span className="text-[var(--text-3)]">/</span>
+              <Link href="/admin" className="text-[13.5px] font-medium text-[var(--text)]">
+                Studio
               </Link>
             </div>
 
             <nav className="flex items-center gap-2">
               <Link
                 href="/admin"
-                className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] transition-colors ${
+                className={`px-2 py-1 text-[12.5px] transition-colors ${
                   pathname === "/admin"
-                    ? "bg-[var(--ink)] text-[var(--paper)]"
-                    : "text-[var(--ink-2)] hover:bg-[var(--bone-2)]"
+                    ? "text-[var(--text)]"
+                    : "text-[var(--text-2)] hover:text-[var(--text)]"
                 }`}
               >
-                <LayoutGrid size={13} /> Projects
+                Projects
               </Link>
               <Link
                 href="/admin/projects/new"
-                className="inline-flex items-center gap-2 rounded-full border border-[var(--bone-3)] bg-[var(--paper)] px-3 py-1.5 text-[12px] text-[var(--ink)] transition-colors hover:border-[var(--clay)] hover:text-[var(--clay)]"
+                className="rounded-sm border border-[var(--border)] px-2.5 py-1 text-[12.5px] text-[var(--text)] transition-colors hover:bg-[var(--bg-2)]"
               >
-                <Plus size={13} /> New
+                + New
               </Link>
-              <span className="mx-2 hidden h-5 w-px bg-[var(--bone-3)] sm:inline-block" />
-              <span className="hidden font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)] sm:inline">
+              <span className="mx-2 h-4 w-px bg-[var(--border)]" />
+              <span className="hidden label sm:inline">
                 {ready ? (username ? `@${username}` : "—") : "…"}
               </span>
               <button
                 onClick={logout}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--bone-3)] px-3 py-1.5 text-[12px] text-[var(--ink-2)] transition-colors hover:border-[var(--clay)] hover:text-[var(--clay)]"
+                className="text-[12.5px] text-[var(--text-2)] hover:text-[var(--accent)] transition-colors"
               >
-                <LogOut size={13} /> Logout
+                Logout
               </button>
             </nav>
           </div>
         </header>
       )}
-      <div className="mx-auto max-w-6xl px-4 py-10">{children}</div>
+      <div className="mx-auto max-w-5xl px-5 py-10">{children}</div>
     </div>
   );
 }

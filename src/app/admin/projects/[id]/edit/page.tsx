@@ -21,12 +21,9 @@ export default function EditProjectPage() {
       setLoading(false);
       return;
     }
-    api
-      .getProject(id)
+    api.getProject(id)
       .then(setProject)
-      .catch((e) =>
-        setErr(e instanceof Error ? e.message : "Failed to load project")
-      )
+      .catch((e) => setErr(e instanceof Error ? e.message : "Failed to load project"))
       .finally(() => setLoading(false));
   }, [id, ready, token]);
 
@@ -35,27 +32,14 @@ export default function EditProjectPage() {
   return (
     <div className="space-y-8">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-          Studio · edit entry
-        </div>
-        <h1 className="mt-1 font-[family-name:var(--font-display)] text-5xl text-[var(--ink)]">
-          {loading ? (
-            <span className="text-[var(--muted)]">loading…</span>
-          ) : project ? (
-            <>
-              Editing{" "}
-              <span className="italic text-[var(--clay)]">
-                &ldquo;{project.title}&rdquo;
-              </span>
-            </>
-          ) : (
-            <span className="italic text-[var(--muted)]">not found</span>
-          )}
+        <div className="label mb-1">Studio · edit entry</div>
+        <h1 className="text-[22px] font-medium text-[var(--text)]">
+          {loading ? "loading…" : project ? `Editing "${project.title}"` : "Not found"}
         </h1>
       </div>
 
       {err && (
-        <div className="rounded-2xl border border-[var(--clay)]/40 bg-[var(--clay)]/8 px-4 py-3 text-[13px] text-[var(--clay-2)]">
+        <div className="rounded-sm border border-[var(--accent)]/40 bg-[var(--accent)]/8 px-3 py-2 text-[12.5px] text-[var(--accent)]">
           {err}
         </div>
       )}

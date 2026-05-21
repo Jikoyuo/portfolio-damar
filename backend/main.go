@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -77,8 +78,26 @@ func main() {
 	})
 	app.Use(recover.New())
 	app.Use(logger.New())
+	// CORS: match explicit origins from env + any *.vercel.app preview/prod.
+	allowList := strings.Split(cfg.CORSOrigin, ",")
+	for i := range allowList {
+		allowList[i] = strings.TrimSpace(allowList[i])
+	}
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     cfg.CORSOrigin,
+		AllowOriginsFunc: func(origin string) bool {
+			// Explicit allowlist (localhost, custom domain, etc.)
+			for _, o := range allowList {
+				if o != "" && strings.EqualFold(o, origin) {
+					return true
+				}
+			}
+			// Any *.vercel.app subdomain (preview & production deployments)
+			lo := strings.ToLower(origin)
+			if strings.HasPrefix(lo, "https://") && strings.HasSuffix(lo, ".vercel.app") {
+				return true
+			}
+			return false
+		},
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowCredentials: false,
