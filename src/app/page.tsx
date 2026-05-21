@@ -1,9 +1,12 @@
 import { api, ApiProject } from "@/lib/api";
+import SmoothScroll from "@/components/motion/SmoothScroll";
+import Cursor from "@/components/motion/Cursor";
+import ScrollProgress from "@/components/motion/ScrollProgress";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import Intro from "@/components/sections/Intro";
+import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
-import WorkList from "@/components/sections/WorkList";
+import Work from "@/components/sections/Work";
 import Path from "@/components/sections/Path";
 import Contact from "@/components/sections/Contact";
 
@@ -22,20 +25,18 @@ export default async function Home() {
   const projects = await getProjects();
 
   return (
-    <>
+    <SmoothScroll>
+      <Cursor />
+      <ScrollProgress />
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-5">
-        <Intro />
-        <hr className="border-[var(--border)]" />
+      <main className="relative">
+        <Hero />
         <About />
-        <hr className="border-[var(--border)]" />
-        <WorkList projects={projects} />
-        <hr className="border-[var(--border)]" />
+        <Work projects={projects} />
         <Path />
-        <hr className="border-[var(--border)]" />
         <Contact />
       </main>
       <SiteFooter />
-    </>
+    </SmoothScroll>
   );
 }

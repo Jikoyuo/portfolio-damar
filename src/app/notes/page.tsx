@@ -1,11 +1,14 @@
 import Link from "next/link";
+import SmoothScroll from "@/components/motion/SmoothScroll";
+import Cursor from "@/components/motion/Cursor";
+import ScrollProgress from "@/components/motion/ScrollProgress";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { listPublishedNotes } from "@/data/notes";
 
 export const metadata = {
   title: "Notes — Damar",
-  description: "Short essays on building, Go, frontend craft, and the occasional rant.",
+  description: "Short essays on building software, Go, frontend craft.",
 };
 
 function fmtDate(iso: string) {
@@ -18,44 +21,52 @@ export default function NotesIndex() {
   const notes = listPublishedNotes();
 
   return (
-    <>
+    <SmoothScroll>
+      <Cursor />
+      <ScrollProgress />
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-5 pt-12 pb-16">
-        <header className="mb-10">
-          <div className="label mb-3">Writing</div>
-          <h1 className="text-[clamp(1.75rem,3.6vw,2.2rem)] leading-[1.18] tracking-[-0.018em] font-medium text-[var(--text)]">
-            Notes
+      <main className="mx-auto max-w-[1100px] px-5 md:px-10 pt-32 pb-24">
+        <div className="flex items-baseline gap-6 mb-12">
+          <span className="label">§ — Writing</span>
+          <span className="h-px flex-1 bg-[var(--bone-3)]" />
+          <span className="label tabular-nums">{String(notes.length).padStart(2, "0")} notes</span>
+        </div>
+
+        <header className="mb-16 max-w-3xl">
+          <h1 className="display text-[clamp(2.4rem,6vw,5rem)] text-[var(--ink)] leading-[0.98]">
+            Field <span className="italic-serif text-[var(--clay)]">notes.</span>
           </h1>
-          <p className="measure mt-3 text-[14.5px] leading-[1.7] text-[var(--text-2)]">
-            Short pieces on building software — Go, frontend, and the
-            occasional thought worth recording. Updated when I have something
-            actually worth saying.
+          <p className="mt-5 text-[16px] leading-[1.65] text-[var(--ink-2)]">
+            Short pieces on building software — Go, frontend, and the occasional
+            thought worth recording. Updated when I have something actually
+            worth saying.
           </p>
         </header>
 
         {notes.length === 0 ? (
-          <p className="py-8 text-[14px] text-[var(--text-3)]">
+          <p className="italic-serif text-2xl text-[var(--muted)] py-20">
             Nothing published yet — first notes are in draft.
           </p>
         ) : (
-          <ul className="border-t border-[var(--border)] divide-y divide-[var(--border)]">
+          <ul className="divide-y divide-[var(--bone-3)] border-y border-[var(--bone-3)]">
             {notes.map((n) => (
               <li key={n.slug}>
                 <Link
                   href={`/notes/${n.slug}`}
-                  className="group grid grid-cols-12 items-baseline gap-3 py-4 px-2 -mx-2 rounded-sm transition-colors hover:bg-[var(--bg-2)]"
+                  data-cursor="Read"
+                  className="group grid grid-cols-12 items-baseline gap-4 py-7 md:py-9 transition-colors hover:bg-[var(--paper)]/60 -mx-3 px-3 rounded-lg"
                 >
-                  <div className="col-span-12 sm:col-span-9">
-                    <div className="text-[14px] text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
+                  <div className="col-span-12 md:col-span-8">
+                    <h2 className="display text-[1.6rem] md:text-[2rem] leading-[1.05] text-[var(--ink)] group-hover:text-[var(--clay)] transition-colors">
                       {n.title}
-                    </div>
-                    <div className="mt-1 text-[12.5px] text-[var(--text-2)] line-clamp-2">
+                    </h2>
+                    <p className="mt-2 text-[14.5px] leading-[1.55] text-[var(--ink-2)] max-w-xl">
                       {n.excerpt}
-                    </div>
+                    </p>
                   </div>
-                  <div className="col-span-12 sm:col-span-3 sm:text-right label tabular-nums">
+                  <div className="col-span-12 md:col-span-4 md:text-right label tabular-nums">
                     <span>{fmtDate(n.date)}</span>
-                    <span className="mx-1.5 text-[var(--text-3)]">·</span>
+                    <span className="mx-2 text-[var(--bone-3)]">·</span>
                     <span>{n.readingTime}</span>
                   </div>
                 </Link>
@@ -65,6 +76,6 @@ export default function NotesIndex() {
         )}
       </main>
       <SiteFooter />
-    </>
+    </SmoothScroll>
   );
 }
